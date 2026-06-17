@@ -142,6 +142,11 @@ export default function Admin({ showToast }: Props) {
   const [loading, setLoading] = useState(false);
   const [showNewAnimal, setShowNewAnimal] = useState(false);
 
+  const [isAuthed, setIsAuthed] = useState(false);
+  const [inputSenha, setInputSenha] = useState("");
+
+  const ADMIN_PASSWORD = "mimipilarmanu";
+
   const loadStats = async () => {
     try {
       const s = await api.stats.get();
@@ -192,22 +197,62 @@ export default function Admin({ showToast }: Props) {
     { key: "adocoes", label: "Adoções", icon: Heart, color: "text-red-500" },
     { key: "abrigos", label: "Abrigos Temp.", icon: Home, color: "text-orange-500" },
     { key: "voluntarios", label: "Voluntários", icon: Users, color: "text-purple-600" },
-    { key: "resgates", label: "Resgates", icon: AlertTriangle, color: "text-amber-600" },
+   { key: "resgates", label: "resgates", icon: AlertTriangle, color: "text-amber-600" },
     { key: "denuncias", label: "Denúncias", icon: Shield, color: "text-red-700" },
     { key: "doacoes", label: "Doações", icon: DollarSign, color: "text-green-700" },
     { key: "apadrinhamentos", label: "Apadrinhamentos", icon: Star, color: "text-purple-500" },
   ];
 
+  // 🔐 LOGIN (UMA VEZ SÓ)
+if (!isAuthed) {
   return (
-    <div className="min-h-screen bg-gray-50">
-      {showNewAnimal && (
-        <NovoAnimalModal
-          onClose={() => setShowNewAnimal(false)}
-          onSuccess={() => { showToast("Animal cadastrado! 🐾"); setShowNewAnimal(false); if (tab === "animais") refresh(); }}
-        />
-      )}
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-6 rounded-2xl border shadow-md w-[320px]">
+        <h2 className="font-bold text-lg mb-3 text-center">
+          Área Administrativa
+        </h2>
 
-      {/* Header */}
+        <input
+          type="password"
+          placeholder="Digite a senha"
+          className="border w-full p-2 rounded mb-3"
+          value={inputSenha}
+          onChange={(e) => setInputSenha(e.target.value)}
+        />
+
+        <button
+          className="bg-green-600 text-white w-full p-2 rounded font-semibold"
+          onClick={() => {
+            if (inputSenha === ADMIN_PASSWORD) {
+              setIsAuthed(true);
+            } else {
+              alert("Senha incorreta!");
+            }
+          }}
+        >
+          Entrar
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ✅ PAINEL NORMAL (SÓ UM RETURN)
+return (
+  <div className="min-h-screen bg-gray-50">
+
+    {showNewAnimal && (
+      <NovoAnimalModal
+        onClose={() => setShowNewAnimal(false)}
+        onSuccess={() => {
+          showToast("Animal cadastrado! 🐾");
+          setShowNewAnimal(false);
+          if (tab === "animais") refresh();
+        }}
+      />
+    )}
+
+   {/* Header */}
       <div className="bg-gradient-to-r from-green-800 to-green-950 text-white px-6 py-8">
         <div className="max-w-7xl mx-auto">
           <p className="text-green-300 text-sm font-semibold uppercase tracking-widest mb-1">Área restrita</p>
@@ -446,6 +491,9 @@ export default function Admin({ showToast }: Props) {
         {/* RESGATES */}
         {tab === "resgates" && (
           <div>
+            <div className="bg-red-500 text-white p-4">
+  TESTE RESGATES
+</div>
             <div className="flex items-center justify-between mb-5">
               <h2 className="font-bold text-xl text-gray-800">Resgates ({data.length})</h2>
               <button onClick={refresh} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-gray-700 font-semibold px-3 py-2 rounded-xl hover:bg-white border border-border"><RefreshCw size={14} /></button>
@@ -473,6 +521,7 @@ export default function Admin({ showToast }: Props) {
         )}
 
         {tab === "denuncias" && (
+          
   <div>
     <div className="flex items-center justify-between mb-5">
       <h2 className="font-bold text-xl text-gray-800">
@@ -595,6 +644,8 @@ export default function Admin({ showToast }: Props) {
           </div>
         )}
       </div>
-    </div>
-  );
-}
+  
+
+     </div>
+  
+);}

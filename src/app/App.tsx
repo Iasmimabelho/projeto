@@ -301,6 +301,86 @@ const [adminSenha, setAdminSenha] = useState("");
         {page === "voluntariado" && <Voluntariado showToast={showToast} />}
         {page === "admin" && <Admin showToast={showToast} />}
 
+        {/* ───── RESGATES ───── */}
+        {page === "resgates" && (
+          <div className="min-h-screen bg-background">
+            <div className="bg-gradient-to-br from-orange-700 to-red-800 text-white py-16 px-4 text-center">
+              <AlertTriangle size={48} className="mx-auto mb-4 opacity-80" />
+              <h1 className="font-['Playfair_Display',serif] font-bold text-5xl mb-4">Solicitar Resgate</h1>
+              <p className="text-orange-200 text-xl">Encontrou um animal em situação de risco? Nos conte agora.</p>
+            </div>
+            <div className="max-w-2xl mx-auto px-4 py-12">
+              <div className="bg-white rounded-3xl shadow-sm border border-border p-8 space-y-5">
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-gray-700">Tipo de Animal *</label>
+                  <select className="w-full border border-border rounded-xl px-4 py-3 bg-input-background focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm">
+                    <option>Cachorro</option><option>Gato</option><option>Ave</option><option>Animal Silvestre</option><option>Outro</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-gray-700">Localização *</label>
+                  <input placeholder="Rua, número, bairro, referências..." className="w-full border border-border rounded-xl px-4 py-3 bg-input-background focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-gray-700">Estado do Animal *</label>
+                  <input placeholder="Ex: Ferido, assustado, filhotes, preso..." className="w-full border border-border rounded-xl px-4 py-3 bg-input-background focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-gray-700">Descrição *</label>
+                  <textarea rows={4} placeholder="Detalhes da situação, quantidade de animais, há quanto tempo está lá..." className="w-full border border-border rounded-xl px-4 py-3 bg-input-background focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm resize-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-gray-700">Seu contato (opcional)</label>
+                  <input placeholder="Nome e telefone para acompanhar o resgate" className="w-full border border-border rounded-xl px-4 py-3 bg-input-background focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-3 text-gray-700">Urgência *</label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {[["baixa", "🟡 Baixa", "Estável"], ["media", "🟠 Média", "Atenção"], ["alta", "🔴 Alta", "Emergência"]].map(([v, l, d]) => (
+                      <button key={v} onClick={() => setRescueUrgency(v)} className={`py-3 rounded-2xl font-semibold text-sm border-2 transition-all ${rescueUrgency === v ? "border-orange-500 bg-orange-50 text-orange-800" : "border-border text-gray-600 hover:border-orange-300"}`}>
+                        <div>{l}</div><div className="text-xs font-normal mt-0.5 text-muted-foreground">{d}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-2 text-gray-700">Foto ou Vídeo</label>
+                  <div onClick={() => fileRef.current?.click()} className="border-2 border-dashed border-gray-300 hover:border-orange-400 rounded-xl p-6 text-center cursor-pointer transition-all">
+                    {photoPreview ? (
+                      <img src={photoPreview} alt="preview" className="max-h-40 mx-auto rounded-xl object-cover" />
+                    ) : (
+                      <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                        <Camera size={32} className="text-orange-400" />
+                        <span className="font-semibold text-sm">Clique para enviar foto ou vídeo</span>
+                        <span className="text-xs">JPG, PNG, MP4 até 50MB</span>
+                      </div>
+                    )}
+                    <input ref={fileRef} type="file" accept="image/*,video/*" className="hidden" onChange={e => handlePhoto(e, setPhotoPreview)} />
+                  </div>
+                </div>
+                <button onClick={async () => {
+                    try {
+                      const form_el = document.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>("#resgate-form input, #resgate-form select, #resgate-form textarea");
+                      const vals: Record<string, string> = {};
+                      form_el.forEach(el => { if (el.name) vals[el.name] = el.value; });
+                      await api.resgates.create({ ...vals, urgencia: rescueUrgency });
+                    } catch (e) { console.error("Erro ao salvar resgate:", e); }
+                    showToast("Solicitação de resgate enviada! Nossa equipe está a caminho. 🚑"); setPhotoPreview(null);
+                  }} className="w-full bg-orange-600 hover:bg-orange-700 text-white py-4 rounded-2xl font-bold text-lg transition-all hover:scale-[1.01] shadow-xl shadow-orange-200 flex items-center justify-center gap-2">
+                  <Send size={20} /> Enviar Solicitação de Resgate
+                </button>
+              </div>
+              <div className="mt-6 bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-3">
+                <AlertTriangle size={20} className="text-red-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold text-red-800 text-sm">Urgência extrema?</p>
+                  <p className="text-red-700 text-sm">Ligue agora: <a href="tel:+5521993642230" className="font-black underline">(21) 99364-2230</a> — plantão 24 horas.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
      {/* ───── DENUNCIA ───── */}
 {page === "denuncia" && (
   <div className="min-h-screen bg-background">
