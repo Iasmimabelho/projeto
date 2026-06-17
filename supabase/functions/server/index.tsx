@@ -49,7 +49,7 @@ app.get(`${PREFIX}/animais`, async (c) => {
   try {
     const items = await kv.getByPrefix("animal:");
     const animals = items
-      .map((i) => { try { return JSON.parse(i.value); } catch { return null; } })
+      .map((i) => { try { return JSON.parse(i.); } catch { return null; } })
       .filter(Boolean)
       .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     return c.json({ data: animals });
@@ -136,7 +136,7 @@ app.post(`${PREFIX}/animais/upload-foto`, async (c) => {
 app.get(`${PREFIX}/adocoes`, async (c) => {
   try {
     const items = await kv.getByPrefix("adocao:");
-    const list = items.map((i) => { try { return JSON.parse(i.value); } catch { return null; } }).filter(Boolean)
+    const list = items.map((i) => { try { return JSON.parse(i); } catch { return null; } }).filter(Boolean)
       .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     return c.json({ data: list });
   } catch (e) { return c.json({ error: String(e) }, 500); }
@@ -173,7 +173,7 @@ app.put(`${PREFIX}/adocoes/:id/status`, async (c) => {
 app.get(`${PREFIX}/abrigos`, async (c) => {
   try {
     const items = await kv.getByPrefix("abrigo:");
-    const list = items.map((i) => { try { return JSON.parse(i.value); } catch { return null; } }).filter(Boolean)
+    const list = items.map((i) => { try { return JSON.parse(i); } catch { return null; } }).filter(Boolean)
       .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     return c.json({ data: list });
   } catch (e) { return c.json({ error: String(e) }, 500); }
@@ -210,7 +210,7 @@ app.put(`${PREFIX}/abrigos/:id/status`, async (c) => {
 app.get(`${PREFIX}/voluntarios`, async (c) => {
   try {
     const items = await kv.getByPrefix("voluntario:");
-    const list = items.map((i) => { try { return JSON.parse(i.value); } catch { return null; } }).filter(Boolean)
+    const list = items.map((i) => { try { return JSON.parse(i); } catch { return null; } }).filter(Boolean)
       .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     return c.json({ data: list });
   } catch (e) { return c.json({ error: String(e) }, 500); }
@@ -247,7 +247,7 @@ app.put(`${PREFIX}/voluntarios/:id/status`, async (c) => {
 app.get(`${PREFIX}/resgates`, async (c) => {
   try {
     const items = await kv.getByPrefix("resgate:");
-    const list = items.map((i) => { try { return JSON.parse(i.value); } catch { return null; } }).filter(Boolean)
+    const list = items.map((i) => { try { return JSON.parse(i); } catch { return null; } }).filter(Boolean)
       .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     return c.json({ data: list });
   } catch (e) { return c.json({ error: String(e) }, 500); }
@@ -284,7 +284,7 @@ app.put(`${PREFIX}/resgates/:id/status`, async (c) => {
 app.get(`${PREFIX}/denuncias`, async (c) => {
   try {
     const items = await kv.getByPrefix("denuncia:");
-    const list = items.map((i) => { try { return JSON.parse(i.value); } catch { return null; } }).filter(Boolean)
+    const list = items.map((i) => { try { return JSON.parse(i); } catch { return null; } }).filter(Boolean)
       .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     return c.json({ data: list });
   } catch (e) { return c.json({ error: String(e) }, 500); }
@@ -321,7 +321,7 @@ app.put(`${PREFIX}/denuncias/:id/status`, async (c) => {
 app.get(`${PREFIX}/doacoes`, async (c) => {
   try {
     const items = await kv.getByPrefix("doacao:");
-    const list = items.map((i) => { try { return JSON.parse(i.value); } catch { return null; } }).filter(Boolean)
+    const list = items.map((i) => { try { return JSON.parse(i); } catch { return null; } }).filter(Boolean)
       .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     return c.json({ data: list });
   } catch (e) { return c.json({ error: String(e) }, 500); }
@@ -346,7 +346,7 @@ app.post(`${PREFIX}/doacoes`, async (c) => {
 app.get(`${PREFIX}/apadrinhamentos`, async (c) => {
   try {
     const items = await kv.getByPrefix("apadrinhamento:");
-    const list = items.map((i) => { try { return JSON.parse(i.value); } catch { return null; } }).filter(Boolean)
+    const list = items.map((i) => { try { return JSON.parse(i); } catch { return null; } }).filter(Boolean)
       .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     return c.json({ data: list });
   } catch (e) { return c.json({ error: String(e) }, 500); }
@@ -404,7 +404,7 @@ app.get(`${PREFIX}/stats`, async (c) => {
     ]);
 
     const parsedDoacoes = doacoes
-      .map((i) => { try { return JSON.parse(i.value); } catch { return null; } })
+      .map((i) => { try { return JSON.parse(i); } catch { return null; } })
       .filter(Boolean);
 
     const totalDoacoes = parsedDoacoes.reduce((sum: number, d: any) => sum + Number(d.valor || 0), 0);
